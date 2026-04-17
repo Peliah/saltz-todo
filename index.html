@@ -12,72 +12,166 @@
 
 <article class="todo-card" data-testid="test-todo-card" role="region" aria-label="Task card">
 
-  <div class="top-row">
-    <label class="check-wrap" aria-label="Mark task as complete">
-      <input
-        type="checkbox"
-        class="todo-complete-toggle"
-        role="checkbox"
-        data-testid="test-todo-complete-toggle"
-        aria-label="Mark complete"
-      />
-    </label>
+  <!-- View mode: focus order = checkbox → status → expand → edit → delete -->
+  <div class="todo-card-view" id="todo-card-view">
+    <div class="top-row">
+      <label class="check-wrap" for="todo-complete-toggle">
+        <input
+          type="checkbox"
+          id="todo-complete-toggle"
+          class="todo-complete-toggle"
+          data-testid="test-todo-complete-toggle"
+          aria-label="Mark complete"
+        />
+      </label>
 
-    <div class="title-block">
-      <h2 class="todo-title" data-testid="test-todo-title">Redesign onboarding flow</h2>
-      <div class="badge-row">
-        <span class="todo-status" data-testid="test-todo-status" aria-label="Status: In Progress">In Progress</span>
-        <span class="todo-priority priority-high" data-testid="test-todo-priority" aria-label="Priority: High">High</span>
+      <label class="status-control-label visually-hidden" for="todo-status-control">Task status</label>
+      <select
+        id="todo-status-control"
+        class="todo-status-control"
+        data-testid="test-todo-status-control"
+      >
+        <option value="Pending">Pending</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Done">Done</option>
+      </select>
+
+      <div class="title-block">
+        <h2 class="todo-title" data-testid="test-todo-title">Redesign onboarding flow</h2>
+        <div class="badge-row priority-accent-high" data-priority-group aria-label="Priority: High">
+          <span
+            class="todo-priority-indicator priority-high"
+            data-testid="test-todo-priority-indicator"
+            aria-hidden="true"
+          ></span>
+          <span class="todo-priority-label" data-todo-priority-label>High</span>
+        </div>
       </div>
     </div>
 
-    <div class="actions">
+    <hr class="todo-divider" />
+
+    <div class="description-section">
       <button
+        type="button"
+        class="todo-expand-toggle"
+        id="todo-expand-toggle"
+        data-testid="test-todo-expand-toggle"
+        aria-expanded="false"
+        aria-controls="todo-collapsible-section"
+        hidden
+      >
+        Show more
+      </button>
+      <div
+        class="todo-collapsible-section"
+        id="todo-collapsible-section"
+        data-testid="test-todo-collapsible-section"
+      >
+        <p class="todo-description" data-testid="test-todo-description">
+          Map out the full user journey from signup to first value moment. Include
+          edge cases for mobile and low-bandwidth scenarios.
+        </p>
+      </div>
+    </div>
+
+    <div class="actions actions--tab-order">
+      <button
+        type="button"
         class="todo-edit-button"
+        id="todo-edit-button"
         data-testid="test-todo-edit-button"
         aria-label="Edit task"
-        onclick="console.log('edit clicked')"
       >Edit</button>
       <button
+        type="button"
         class="todo-delete-button"
         data-testid="test-todo-delete-button"
         aria-label="Delete task"
-        onclick="alert('Delete clicked')"
       >Delete</button>
     </div>
+
+    <div class="date-row">
+      <div class="date-chip">
+        <div class="dot blue"></div>
+        <time class="todo-due-date" data-testid="test-todo-due-date" datetime="2026-05-01T18:00:00Z">
+          Due May 1, 2026
+        </time>
+      </div>
+      <div class="date-chip date-chip--remaining" id="time-remaining-chip">
+        <div class="dot" id="urgency-dot"></div>
+        <span class="todo-overdue-indicator" data-testid="test-todo-overdue-indicator" id="todo-overdue-indicator" hidden>Overdue</span>
+        <time
+          class="todo-time-remaining"
+          data-testid="test-todo-time-remaining"
+          id="time-remaining"
+          aria-live="polite"
+          datetime="2026-05-01T18:00:00Z"
+        ></time>
+      </div>
+    </div>
+
+    <ul class="todo-tags" data-testid="test-todo-tags" role="list" aria-label="Tags">
+      <li class="todo-tag" data-testid="test-todo-tag-work">work</li>
+      <li class="todo-tag" data-testid="test-todo-tag-urgent">urgent</li>
+      <li class="todo-tag">design</li>
+    </ul>
   </div>
 
-  <hr />
-
-  <p class="todo-description" data-testid="test-todo-description">
-    Map out the full user journey from signup to first value moment. Include
-    edge cases for mobile and low-bandwidth scenarios.
-  </p>
-
-  <div class="date-row">
-    <div class="date-chip">
-      <div class="dot blue"></div>
-      <time class="todo-due-date" data-testid="test-todo-due-date" datetime="2026-05-01T18:00:00Z">
-        Due May 1, 2026
-      </time>
+  <!-- Edit mode -->
+  <form
+    class="todo-edit-form"
+    id="todo-edit-form"
+    data-testid="test-todo-edit-form"
+    hidden
+    aria-label="Edit task"
+  >
+    <div class="edit-form-fields">
+      <div class="edit-field">
+        <label for="todo-edit-title-input">Title</label>
+        <input
+          type="text"
+          id="todo-edit-title-input"
+          data-testid="test-todo-edit-title-input"
+          name="title"
+          required
+          autocomplete="off"
+        />
+      </div>
+      <div class="edit-field">
+        <label for="todo-edit-description-input">Description</label>
+        <textarea
+          id="todo-edit-description-input"
+          data-testid="test-todo-edit-description-input"
+          name="description"
+          rows="4"
+        ></textarea>
+      </div>
+      <div class="edit-field-row">
+        <div class="edit-field">
+          <label for="todo-edit-priority-select">Priority</label>
+          <select id="todo-edit-priority-select" data-testid="test-todo-edit-priority-select" name="priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="edit-field">
+          <label for="todo-edit-due-date-input">Due date</label>
+          <input
+            type="datetime-local"
+            id="todo-edit-due-date-input"
+            data-testid="test-todo-edit-due-date-input"
+            name="due"
+          />
+        </div>
+      </div>
     </div>
-    <div class="date-chip" id="time-remaining-chip">
-      <div class="dot" id="urgency-dot"></div>
-      <time
-        class="todo-time-remaining"
-        data-testid="test-todo-time-remaining"
-        id="time-remaining"
-        aria-live="polite"
-        datetime="2026-05-01T18:00:00Z"
-      ></time>
+    <div class="edit-form-actions">
+      <button type="submit" class="todo-save-button" data-testid="test-todo-save-button">Save</button>
+      <button type="button" class="todo-cancel-button" data-testid="test-todo-cancel-button" id="todo-cancel-button">Cancel</button>
     </div>
-  </div>
-
-  <ul class="todo-tags" data-testid="test-todo-tags" role="list" aria-label="Tags">
-    <li class="todo-tag" data-testid="test-todo-tag-work">work</li>
-    <li class="todo-tag" data-testid="test-todo-tag-urgent">urgent</li>
-    <li class="todo-tag">design</li>
-  </ul>
+  </form>
 
 </article>
 
